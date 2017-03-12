@@ -1,3 +1,4 @@
+
 var actualObject = {
     arr: [1, 2, {name: 'ben', age: 23}, 'test', true],
     prop: function() {
