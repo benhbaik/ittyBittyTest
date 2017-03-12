@@ -1,6 +1,14 @@
 var ittyBittyTest = {
-    // check to see if value exists or not
-    // compare objects by value
+    run: function(tests) {
+        for (var case in tests) {
+            try {
+                tests[case]();
+                console.log('pass');
+            } catch(e) {
+                console.log(fail);
+            }
+        }
+    }
     fail: function(msg) {
         throw new Error('Default fail.');
     },
@@ -24,7 +32,6 @@ var ittyBittyTest = {
         if (actualArray.length !== expectedArray.length) {
             throw new Error(actualArray + ' does not equal ' + expectedArray + '.');
         }
-
         for (var i = 0; i < actualArray.length; i++) {
             var currentActualVal = actualArray[i];
             var currentExpectedVal = expectedArray[i];
@@ -44,9 +51,11 @@ var ittyBittyTest = {
 
             }
             if ((typeof currentActualVal !== 'object') && (typeof currentExpectedVal !== 'object')) {
+
                 if (currentActualVal !== currentExpectedVal) {
                     throw new Error(actualArray + ' does not equal ' + expectedArray + '.');
                 }
+
             }
         }
         return true;
@@ -58,11 +67,9 @@ var ittyBittyTest = {
         if ( !(actualObject instanceof Object) || !(expectedObject instanceof Object) ) {
             throw new Error('One or both of the arguments is not an object.');
         }
-
         if (Object.keys(actualObject).length !== Object.keys(expectedObject).length) {
             throw new Error(actualObject + ' does not equal ' + expectedObject + '.');
         }
-
         for (var prop in actualObject) {
             var actualPropVal = actualObject[prop];
             var expectedPropVal = expectedObject[prop];
@@ -76,8 +83,6 @@ var ittyBittyTest = {
             if (actualPropVal instanceof Array && expectedPropVal instanceof Array) {
                 this.assertArrayDeepEquals(actualPropVal, expectedPropVal);
             }
-
-
             switch (typeof actualPropVal) {
                 case 'object':
                     if ( !(this.assertObjectDeepEquals(actualPropVal, expectedPropVal)) ) {
