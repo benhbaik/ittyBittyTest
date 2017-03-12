@@ -16,7 +16,7 @@ var ittyBittyTest = {
         if (!actualArray || !expectedArray) {
             throw new Error('One or both of the arguments are undefined.');
         }
-        if (!(actualArray instanceof Array) || !(expectedArray instanceof Array)) {
+        if ( !(actualArray instanceof Array) || !(expectedArray instanceof Array) ) {
             throw new Error('One or both of the arguments is not an array');
         }
         if (actualLength !== expectedLength) {
@@ -27,6 +27,12 @@ var ittyBittyTest = {
             var currentActualVal = actualArray[i];
             var currentExpectedVal = expectedArray[i];
 
+            if ((typeof currentActualVal === 'object') !== (typeof currentExpectedVal === 'object')) {
+                return false;
+            }
+            if (typeof currentActualVal === 'object' && typeof currentExpectedVal === 'object') {
+                this.assertObjectDeepEquals(currentActualVal, currentExpectedVal);
+            }
             if (currentActualVal instanceof Array && currentExpectedVal instanceof Array) {
 
                  if ( !(this.assertArrayStrictEquals(currentActualVal, currentExpectedVal)) ) {
@@ -41,7 +47,56 @@ var ittyBittyTest = {
         }
         return true;
     },
-    assertObjectDeepEquals: function() {
+    assertObjectDeepEquals: function(actualObject, expectedObject) {
+        var actualLength;
+        var expectedLength;
 
+        if (!actualObject || !expectedObject) {
+            throw new Error('One or both of the arguments are undefined.');
+        }
+        if ( !(actualObject instanceof Object) || !(expectedObject instanceof Object) ) {
+            throw new Error('One or both of the arguments is not an object.');
+        }
+
+        actualLength = Object.keys(actualObject).length;
+        expectedLength = Object.keys(expectedObject).length;
+
+        if (actualLength !== expectedLength) {
+            return false;
+        }
+
+        for (var prop in actualObject) {
+            var actualPropVal = actualObject[prop];
+            var expectedPropVal = expectedObject[prop];
+
+            if ( !expectedObject.hasOwnProperty(prop) ) {
+                return false;
+            }
+            if (actualPropVal instanceof Array !== expectedPropVal instanceof Array) {
+                return false;
+            }
+            if (actualPropVal instanceof Array && expectedPropVal instanceof Array) {
+                this.assertArrayDeepEquals(actualPropVal, expectedPropVal);
+            }
+
+
+            switch (typeof actualPropVal) {
+                case 'object':
+                    if ( !(this.assertObjectDeepEquals(actualPropVal, expectedPropVal)) ) {
+                        return false;
+                    }
+                    break;
+                case 'function':
+                    if ( (actualPropVal.toString() !== expectedPropVal.toString()) ) {
+                        return false;
+                    }
+                    break;
+                default:
+                    if (actualPropVal !== expectedPropVal) {
+                        return false;
+                    }
+            }
+        }
+        return true;
     }
 }

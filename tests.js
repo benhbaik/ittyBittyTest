@@ -1,4 +1,19 @@
-var actualNestedArray = [[1,2,3], [[1, 2], 3]];
-var expectedNestedArray = [[1,2,3], [[1, 2], [1, 2]]];
-// debugger;
-console.log(ittyBittyTest.assertArrayStrictEquals(actualNestedArray, expectedNestedArray));
+var actualObject = {
+    arr: [1, 2, {name: 'ben', age: 23}, 'test', true],
+    prop: function() {
+        console.log(this);
+    },
+    key: 2
+};
+var expectedObject = {
+    key: 2,
+    prop: function() {
+        console.log(this);
+    },
+    arr: [1, 2, {name: 'ben', age: 23}, 'test', true]
+};
+var actualArray = [1, 2, 3];
+var expectedArray = [1, 2, 3];
+
+
+console.log(ittyBittyTest.assertObjectDeepEquals(actualObject, expectedObject));
